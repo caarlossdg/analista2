@@ -1,10 +1,9 @@
 import streamlit as st
 import requests
 
-# URL del Space Gradio como backend
-API_URL = "https://cdega-analista3.hf.space/api/predict/"
+# URL correcta del Space en Hugging Face (Gradio)
+API_URL = "https://cdega-analista3.hf.space/run/predict"
 
-# Configuración de la app
 st.set_page_config(page_title="Asistente de Análisis de Software", page_icon="🤖")
 st.title("🤖 Asistente de Análisis de Software")
 
@@ -13,12 +12,11 @@ apps = st.text_input("📱 Nombre(s) de la(s) aplicación(es):", placeholder="Ej
 contexto = st.text_input("🎯 ¿Algún contexto o uso específico?", placeholder="Ej: enseñanza de idiomas, productividad")
 tipo = st.radio("🔎 Tipo de análisis", ["Breve", "Completo"])
 
-# Botón de análisis
 if st.button("Analizar"):
     if not apps and not contexto:
         st.warning("Por favor, introduce al menos una aplicación o un contexto.")
     else:
-        # Construir prompt
+        # Construcción del prompt
         if apps:
             prompt = f"""
 Actúa como un asistente en castellano experto en análisis de software. 
@@ -55,14 +53,17 @@ Estructura sugerida:
 3. Recomendación final con justificación
 """
 
-        # Enviar al backend Gradio
+        # Llamada al backend
         with st.spinner("Consultando modelo en el backend..."):
             try:
                 response = requests.post(API_URL, json={"data": [prompt]}, timeout=45)
                 if response.status_code == 200:
                     data = response.json()
-                    st.markdown(data["data"][0])
+                    if isinstance(data, dict) and "data" in data:
+                        st.markdown(data["data"][0])
+                    else:
+                        st.write("Respuesta inesperada del modelo:", data)
                 else:
-                    st.error(f"Error {response.status_code}: {response.text}")
+                    st.error(f"❌ Error {response.status_code}: {response.text}")
             except Exception as e:
                 st.error(f"❌ Error al conectar con el backend: {e}")
