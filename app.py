@@ -52,7 +52,7 @@ Estructura sugerida:
 
         with st.spinner("Consultando modelo en el backend..."):
             try:
-                response = requests.post(API_URL, json={"inputs": prompt}, timeout=45)
+               response = requests.post(API_URL, json={"data": [prompt]}, timeout=45)
                 if response.status_code == 200:
                     data = response.json()
                     if isinstance(data, list) and "generated_text" in data[0]:
