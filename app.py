@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-API_URL = "https://cdega-analista3.hf.space/run/predict"
+API_URL = "https://cdega-analista3.hf.space/predict"
 
 st.set_page_config(page_title="Asistente de Análisis de Software", page_icon="🤖")
 st.title("🤖 Asistente de Análisis de Software")
@@ -52,10 +52,13 @@ Estructura sugerida:
 
         with st.spinner("Consultando modelo en el backend..."):
             try:
-                response = requests.post(API_URL, json={"data": [prompt]}, timeout=45)
+                response = requests.post(API_URL, json={"inputs": prompt}, timeout=45)
                 if response.status_code == 200:
                     data = response.json()
-                    st.markdown(data["data"][0])
+                    if isinstance(data, list) and "generated_text" in data[0]:
+                        st.markdown(data[0]["generated_text"])
+                    else:
+                        st.write(data)
                 else:
                     st.error(f"Error {response.status_code}: {response.text}")
             except Exception as e:
