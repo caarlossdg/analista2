@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-API_URL = "https://cdega-analista3.hf.space/predict"
+API_URL = "https://cdega-analista3.hf.space/api/predict/"
 
 st.set_page_config(page_title="Asistente de Análisis de Software", page_icon="🤖")
 st.title("🤖 Asistente de Análisis de Software")
